@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { initDatabase } from '../src/lib/db';
+import { initDatabase, disconnectDatabase } from '../src/lib/db';
 
 async function main() {
   try {
@@ -13,12 +13,16 @@ async function main() {
     console.log('  - accounts');
     console.log('  - sessions');
     console.log('  - verification_tokens');
+    console.log('  - categories');
+    console.log('  - products');
     
     console.log('📊 Created indexes for better performance');
-    process.exit(0);
   } catch (error) {
     console.error('❌ Failed to initialize database:', error);
     process.exit(1);
+  } finally {
+    await disconnectDatabase();
+    process.exit(0);
   }
 }
 

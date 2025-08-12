@@ -21,16 +21,22 @@ export default function Home() {
               Sign In
             </Link>
             <Link
-              href="/dashboard"
+              href="/admin"
               className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-medium py-3 px-6 rounded-lg transition-colors"
             >
-              Dashboard
+              Admin Dashboard
             </Link>
             <Link
-              href="/api/health"
-              className="border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium py-3 px-6 rounded-lg transition-colors"
+              href="/admin/products"
+              className="border border-green-600 text-green-600 hover:bg-green-600 hover:text-white font-medium py-3 px-6 rounded-lg transition-colors"
             >
-              Health Check
+              Manage Products
+            </Link>
+            <Link
+              href="/admin/categories"
+              className="border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Manage Categories
             </Link>
           </div>
 

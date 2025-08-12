@@ -130,11 +130,59 @@ export async function initDatabase(): Promise<void> {
       )
     `);
 
+    // Create categories table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS categories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE,
+        description TEXT,
+        slug VARCHAR(255) NOT NULL UNIQUE,
+        image_url VARCHAR(500),
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Create products table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        slug VARCHAR(255) NOT NULL UNIQUE,
+        price DECIMAL(10,2) NOT NULL,
+        compare_price DECIMAL(10,2),
+        sku VARCHAR(100) UNIQUE,
+        barcode VARCHAR(100),
+        track_quantity BOOLEAN DEFAULT true,
+        quantity INTEGER DEFAULT 0,
+        category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
+        image_url VARCHAR(500),
+        images TEXT[], -- Array of image URLs
+        weight DECIMAL(8,2),
+        dimensions JSONB, -- {length: 10, width: 10, height: 10}
+        is_active BOOLEAN DEFAULT true,
+        is_featured BOOLEAN DEFAULT false,
+        seo_title VARCHAR(255),
+        seo_description TEXT,
+        tags TEXT[],
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Create indexes for better performance
     await client.query('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
     await client.query('CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON accounts(user_id)');
     await client.query('CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)');
     await client.query('CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(session_token)');
+    await client.query('CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug)');
+    await client.query('CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug)');
+    await client.query('CREATE INDEX IF NOT EXISTS idx_products_category_id ON products(category_id)');
+    await client.query('CREATE INDEX IF NOT EXISTS idx_products_sku ON products(sku)');
+    await client.query('CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active)');
+    await client.query('CREATE INDEX IF NOT EXISTS idx_products_is_featured ON products(is_featured)');
 
     console.log('Database tables initialized successfully');
   } catch (error) {
